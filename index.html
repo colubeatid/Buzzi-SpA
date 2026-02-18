@@ -1,0 +1,2144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BUZZI S.p.A — Investment Thesis</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ─── RESET & ROOT ─────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --ivory: #F5F0E8;
+      --ivory2: #EDE6D8;
+      --ivory3: #E2D9C8;
+      --parchment: #FAF7F2;
+      --slate: #1E1E1E;
+      --slate2: #3A3530;
+      --slate3: #6A6460;
+      --gold: #B8873A;
+      --gold2: #D4A84B;
+      --gold3: #8A6020;
+      --red: #A83830;
+      --green: #2A6040;
+      --blue: #1A4A6A;
+      --border: #D4CBBA;
+      --black: #111008;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--ivory);
+      color: var(--slate);
+      font-family: 'Spectral', Georgia, serif;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ─── NOISE OVERLAY ────────────────────────────────────────── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.022;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ─── PROGRESS BAR ─────────────────────────────────────────── */
+    #progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--gold);
+      z-index: 9999;
+      transition: width 0.4s ease;
+    }
+
+    /* ─── NAV DOT SIDEBAR ──────────────────────────────────────── */
+    #nav-dots {
+      position: fixed;
+      right: 28px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .dot.active {
+      background: var(--gold);
+      transform: scale(1.6);
+    }
+
+    .dot:hover {
+      background: var(--gold2);
+    }
+
+    .dot-label {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--slate3);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .dot:hover .dot-label {
+      opacity: 1;
+    }
+
+    /* ─── SLIDE BASE ───────────────────────────────────────────── */
+    .slide {
+      min-height: 100vh;
+      width: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* ─── SLIDE HEADER STRIP ───────────────────────────────────── */
+    .slide-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-label::after {
+      content: '';
+      flex: 1;
+      max-width: 80px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.5;
+    }
+
+    .slide-label.light {
+      color: var(--gold2);
+    }
+
+    .slide-label.light::after {
+      background: var(--gold2);
+    }
+
+    /* ─── TYPOGRAPHY ───────────────────────────────────────────── */
+    .display-xl {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(54px, 8vw, 110px);
+      font-weight: 900;
+      line-height: 0.92;
+      letter-spacing: -3px;
+      color: var(--slate);
+    }
+
+    .display-l {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -1.5px;
+    }
+
+    .display-m {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 3.5vw, 42px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+    }
+
+    .body-l {
+      font-family: 'Spectral', serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--slate2);
+    }
+
+    .body-m {
+      font-family: 'Spectral', serif;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--slate3);
+    }
+
+    .mono {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--slate3);
+    }
+
+    .gold {
+      color: var(--gold);
+    }
+
+    .red {
+      color: var(--red);
+    }
+
+    .green {
+      color: var(--green);
+    }
+
+    .italic {
+      font-style: italic;
+    }
+
+    /* ─── LAYOUT CONTAINERS ────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 80px;
+    }
+
+    .container-full {
+      width: 100%;
+    }
+
+    .col-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .col-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 32px;
+    }
+
+    .col-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    /* ─── ANIMATE-IN CLASS ─────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .revealcolubeat {
+      transform: translateY(32px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      color: rgb(219, 177, 26);
+      font-family: serif;
+      text-align: center;
+      font-size: 17px;
+      letter-spacing: 0.8px;
+    }
+
+    .revealcolubeat2 {
+      text-decoration: none;
+      color: rgb(12, 12, 11);
+      background-color: rgb(236, 228, 198);
+      text-align: center;
+      padding: 20px;
+      border-radius: 22px;
+    }
+
+    @media (max-width:620px) {
+      .revealcolubeat {
+        padding: 8px;
+        font-size: 8px;
+        letter-spacing: 0.1px;
+        padding: 10px;
+        font-weight: bold;
+      }
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 {
+      transition-delay: 0.12s;
+    }
+
+    .reveal-delay-2 {
+      transition-delay: 0.24s;
+    }
+
+    .reveal-delay-3 {
+      transition-delay: 0.36s;
+    }
+
+    .reveal-delay-4 {
+      transition-delay: 0.48s;
+    }
+
+    .reveal-delay-5 {
+      transition-delay: 0.60s;
+    }
+
+    /* ─── CARDS ────────────────────────────────────────────────── */
+    .card {
+      background: var(--parchment);
+      border: 1px solid var(--border);
+      padding: 32px;
+      position: relative;
+    }
+
+    .card-dark {
+      background: var(--black);
+      border: 1px solid #2A2418;
+      padding: 32px;
+    }
+
+    .card-gold-border {
+      border-left: 3px solid var(--gold);
+    }
+
+    .kpi-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+
+    .kpi-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--slate3);
+      margin-top: 8px;
+    }
+
+    /* ─── DIVIDER ──────────────────────────────────────────────── */
+    .rule {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin: 48px 0;
+    }
+
+    .rule-gold {
+      width: 60px;
+      height: 2px;
+      background: var(--gold);
+      margin: 24px 0;
+    }
+
+    /* ─── CHART BARS ───────────────────────────────────────────── */
+    .bar-chart {
+      width: 100%;
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 16px;
+    }
+
+    .bar-label-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: var(--slate3);
+      width: 110px;
+      flex-shrink: 0;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 32px;
+      background: var(--ivory2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0;
+      transition: width 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      padding-left: 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 1px;
+    }
+
+    .bar-fill.gold {
+      background: linear-gradient(90deg, var(--gold3), var(--gold));
+      color: #fff;
+    }
+
+    .bar-fill.blue {
+      background: linear-gradient(90deg, #1A3A5A, var(--blue));
+      color: #fff;
+    }
+
+    .bar-fill.green {
+      background: linear-gradient(90deg, #1A4030, var(--green));
+      color: #fff;
+    }
+
+    .bar-fill.grey {
+      background: linear-gradient(90deg, #8A8070, #B0A898);
+      color: var(--slate);
+    }
+
+    /* ─── SCENARIO CARDS ───────────────────────────────────────── */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+    }
+
+    .scenario-card {
+      padding: 40px 32px;
+      border: 1px solid var(--border);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: default;
+      position: relative;
+    }
+
+    .scenario-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      z-index: 2;
+    }
+
+    .scenario-card.base {
+      background: var(--black);
+      border-color: var(--gold);
+    }
+
+    .scenario-card.bull {
+      background: var(--parchment);
+      border-color: var(--border);
+    }
+
+    .scenario-card.bear {
+      background: var(--parchment);
+      border-color: var(--border);
+    }
+
+    .scenario-stripe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    .stripe-bear {
+      background: var(--red);
+    }
+
+    .stripe-base {
+      background: var(--gold);
+    }
+
+    .stripe-bull {
+      background: var(--green);
+    }
+
+    /* ─── RISK CARDS ───────────────────────────────────────────── */
+    .risk-card {
+      border: 1px solid var(--border);
+      background: var(--parchment);
+      padding: 28px;
+      position: relative;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .risk-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-3px);
+    }
+
+    .risk-level-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+    }
+
+    /* ─── PRICE GAUGE ──────────────────────────────────────────── */
+    .gauge-wrap {
+      padding: 40px;
+      background: var(--black);
+      margin-top: 40px;
+    }
+
+    .gauge-track {
+      height: 6px;
+      background: #2A2418;
+      position: relative;
+      margin: 32px 0;
+      border-radius: 3px;
+      overflow: visible;
+    }
+
+    .gauge-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .gauge-marker {
+      position: absolute;
+      top: -10px;
+      width: 2px;
+      height: 26px;
+      background: #fff;
+      transform: translateX(-50%);
+    }
+
+    .gauge-marker-label {
+      position: absolute;
+      top: -30px;
+      transform: translateX(-50%);
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      color: #fff;
+      white-space: nowrap;
+      letter-spacing: 1px;
+    }
+
+    /* ─── ANALYST COMMENT ──────────────────────────────────────── */
+    .analyst-comment {
+      border-bottom: 1px solid #2A2418;
+      padding: 36px 0;
+      cursor: pointer;
+    }
+
+    .analyst-comment:last-child {
+      border-bottom: none;
+    }
+
+    .comment-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .comment-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold2);
+      margin-bottom: 12px;
+    }
+
+    .comment-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      font-style: italic;
+      color: #E8E0D0;
+      line-height: 1.3;
+      max-width: 700px;
+    }
+
+    .comment-toggle {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      flex-shrink: 0;
+      margin-top: 6px;
+      transition: color 0.2s;
+    }
+
+    .comment-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .comment-body.open {
+      max-height: 400px;
+    }
+
+    .comment-text {
+      font-family: 'Spectral', serif;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #8A8070;
+      padding-top: 20px;
+      max-width: 780px;
+    }
+
+    .comment-text .hl {
+      color: var(--gold2);
+    }
+
+    .comment-text .hlr {
+      color: #C07870;
+    }
+
+    /* ─── TIMELINE ─────────────────────────────────────────────── */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .tl-item {
+      position: relative;
+      padding-bottom: 36px;
+    }
+
+    .tl-dot {
+      position: absolute;
+      left: -36px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: var(--ivory);
+    }
+
+    .tl-year {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    /* ─── SECTION DECORATORS ───────────────────────────────────── */
+    .section-num-bg {
+      font-family: 'Playfair Display', serif;
+      font-size: 200px;
+      font-weight: 900;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--border);
+      line-height: 1;
+      position: absolute;
+      right: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -10px;
+    }
+
+    /* ─── SCROLLBAR ────────────────────────────────────────────── */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--ivory2);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+   SLIDE STYLES
+   ───────────────────────────────────────────────────────────── */
+
+    /* SLIDE 1: COVER */
+    #s1 {
+      background: var(--black);
+      min-height: 100vh;
+      padding: 0;
+      justify-content: flex-end;
+    }
+
+    .cover-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 70% 40%, rgba(184, 135, 58, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 20% 80%, rgba(184, 135, 58, 0.06) 0%, transparent 50%),
+        var(--black);
+    }
+
+    .cover-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(184, 135, 58, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(184, 135, 58, 0.05) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+
+    .cover-circle-1 {
+      position: absolute;
+      right: 8%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      border: 1px solid rgba(184, 135, 58, 0.15);
+    }
+
+    .cover-circle-2 {
+      position: absolute;
+      right: 8%;
+      top: 50%;
+      transform: translateY(-50%) translate(80px, -80px);
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      border: 1px solid rgba(184, 135, 58, 0.08);
+    }
+
+    .cover-content {
+      position: relative;
+      z-index: 2;
+      padding: 80px 20px 200px;
+      width: 100%;
+    }
+
+    .cover-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 5px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 36px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .cover-eyebrow::before {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .cover-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(72px, 12vw, 160px);
+      font-weight: 900;
+      line-height: 0.88;
+      letter-spacing: -6px;
+      color: #F0E8D8;
+      margin-bottom: 20px;
+    }
+
+    .cover-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(18px, 2.5vw, 28px);
+      font-style: italic;
+      color: var(--gold);
+      margin-bottom: 56px;
+      letter-spacing: -0.5px;
+    }
+
+    .cover-tagline {
+      font-family: 'Spectral', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: rgba(240, 232, 216, 0.5);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 60px;
+    }
+
+    .cover-kpis {
+      display: flex;
+      gap: 40px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(184, 135, 58, 0.2);
+    }
+
+    .cover-kpi-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: -1px;
+    }
+
+    .cover-kpi-lbl {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: rgba(240, 232, 216, 0.35);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .cover-verdict {
+      margin-left: auto;
+      align-self: flex-end;
+      text-align: right;
+    }
+
+    .verdict-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border: 4px solid rgb(246, 216, 46);
+      color: rgb(246, 216, 46);
+      padding: 10px 20px;
+      display: inline-block;
+    }
+
+    @media (max-width: 400px) {
+      .verdict-tag {
+        font-size: 8px;
+        letter-spacing: 3px;
+        text-align: center;
+      }
+    }
+
+    /* SLIDES 2-9: CONTENT PAGES */
+    .content-slide {
+      background: var(--ivory);
+      padding: 100px 80px;
+      min-height: 100vh;
+    }
+
+    .content-slide.dark {
+      background: var(--black);
+    }
+
+    .content-slide.parchment {
+      background: var(--parchment);
+    }
+
+    /* ─── WATERFALL CHART ──────────────────────────────────────── */
+    .waterfall {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 200px;
+      padding-bottom: 0;
+      margin: 40px 0;
+    }
+
+    .wf-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    .wf-bar-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      position: relative;
+    }
+
+    .wf-bar {
+      width: 100%;
+      border-radius: 2px 2px 0 0;
+      transition: height 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .wf-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      color: var(--slate3);
+      text-align: center;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .wf-lbl {
+      font-family: 'DM Mono', monospace;
+      font-size: 8px;
+      letter-spacing: 0.5px;
+      color: var(--slate3);
+      text-align: center;
+      margin-top: 8px;
+      line-height: 1.3;
+    }
+
+    /* ─── DONUT ────────────────────────────────────────────────── */
+    .donut-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .donut-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    /* ─── MOAT STEPS ───────────────────────────────────────────── */
+    .moat-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+
+    .moat-step {
+      padding: 32px 28px;
+      border: 1px solid var(--border);
+      border-right: none;
+      transition: background 0.3s;
+      position: relative;
+    }
+
+    .moat-step:last-child {
+      border-right: 1px solid var(--border);
+    }
+
+    .moat-step.highlight {
+      background: var(--black);
+      border-color: var(--gold);
+    }
+
+    .step-arrow {
+      position: absolute;
+      right: -1px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px;
+      height: 12px;
+      background: var(--gold);
+      clip-path: polygon(0 50%, 100% 0, 100% 100%);
+      z-index: 2;
+    }
+
+    .moat-step.highlight .step-arrow {
+      display: none;
+    }
+
+    .step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .moat-step.highlight .step-num {
+      color: rgba(184, 135, 58, 0.3);
+    }
+
+    /* ─── RESPONSIVE ───────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .container {
+        padding: 0 24px;
+      }
+
+      .content-slide {
+        padding: 60px 24px;
+      }
+
+      .cover-content {
+        padding: 40px 20px 220px;
+      }
+
+      .col-2,
+      .col-3,
+      .col-4 {
+        grid-template-columns: 1fr;
+      }
+
+      .moat-steps {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .scenario-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cover-kpis {
+        flex-wrap: wrap;
+      }
+
+      .section-num-bg {
+        display: none;
+      }
+
+      #nav-dots {
+        display: none;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="progress"></div>
+
+  <!-- NAV DOTS -->
+  <div id="nav-dots">
+    <div class="dot active" onclick="scrollTo(0,0)"><span class="dot-label">Cover</span></div>
+    <div class="dot" onclick="scrollToSlide(1)"><span class="dot-label">Thesis</span></div>
+    <div class="dot" onclick="scrollToSlide(2)"><span class="dot-label">Business</span></div>
+    <div class="dot" onclick="scrollToSlide(3)"><span class="dot-label">Geography</span></div>
+    <div class="dot" onclick="scrollToSlide(4)"><span class="dot-label">Financials</span></div>
+    <div class="dot" onclick="scrollToSlide(5)"><span class="dot-label">Risks</span></div>
+    <div class="dot" onclick="scrollToSlide(6)"><span class="dot-label">Valuation</span></div>
+    <div class="dot" onclick="scrollToSlide(7)"><span class="dot-label">M&amp;A</span></div>
+    <div class="dot" onclick="scrollToSlide(8)"><span class="dot-label">Capital</span></div>
+    <div class="dot" onclick="scrollToSlide(9)"><span class="dot-label">Analyst</span></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+     SLIDE 1 — COVER
+══════════════════════════════════════════════════════════ -->
+  <section class="slide" id="s1">
+    <div class="cover-bg"></div>
+    <div class="cover-grid"></div>
+    <div class="cover-circle-1"></div>
+    <div class="cover-circle-2"></div>
+
+    <div class="cover-content">
+      <div class="cover-eyebrow reveal">Investment Thesis Colubeat Investment Desk· BZU.MI · Milan Exchange · Feb 2026
+      </div>
+
+      <div class="cover-title reveal reveal-delay-1">BUZZI<br>S.p.A.</div>
+      <div class="cover-subtitle reveal reveal-delay-2">The Italian Discount</div>
+      <div class="cover-tagline reveal reveal-delay-3">"The 1B fortress you'll wish you owned when the sunshine turns to
+        rain."</div>
+
+      <div class="cover-kpis reveal reveal-delay-4">
+        <div>
+          <div class="cover-kpi-val">~6.0×</div>
+          <div class="cover-kpi-lbl">EV / EBITDA</div>
+        </div>
+        <div>
+          <div class="cover-kpi-val">€1.13B</div>
+          <div class="cover-kpi-lbl">Net Cash</div>
+        </div>
+        <div>
+          <div class="cover-kpi-val">€1.23B</div>
+          <div class="cover-kpi-lbl">FY2025 EBITDA</div>
+        </div>
+        <div>
+          <div class="cover-kpi-val" style="color:#A83830">−7.0%</div>
+          <div class="cover-kpi-lbl">US Sales YoY</div>
+        </div>
+        <div class="cover-verdict">
+          <div class="verdict-tag">⬤ Watchlist — Not an Immediate Buy</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+     SLIDE 2 — EXECUTIVE THESIS
+══════════════════════════════════════════════════════════ -->
+  <section class="slide content-slide" id="s2">
+    <div class="section-num-bg">01</div>
+    <div class="container">
+      <div class="slide-label reveal">01 — Executive Summary</div>
+
+      <div class="display-l reveal reveal-delay-1" style="margin-bottom:48px; max-width:780px;">
+        The <em class="gold">Italian Discount</em><br>Is a Structural Mispricing
+      </div>
+
+      <div class="col-2" style="gap:80px;">
+        <div>
+          <div class="card card-gold-border reveal reveal-delay-2" style="margin-bottom:32px;">
+            <p class="body-l italic" style="color:var(--slate);">
+              On screen, Buzzi looks like a standard Italian cement maker. It's not. Most of its EBITDA comes from
+              <strong>dollars in Texas and the Midwest</strong> — but the market ignores that. You're buying US
+              infrastructure assets at a European price.
+            </p>
+          </div>
+
+          <div class="reveal reveal-delay-3">
+            <div class="mono" style="margin-bottom:16px; color:var(--gold);">Three reasons for the discount</div>
+            <div style="display:flex; flex-direction:column; gap:16px;">
+              <div style="display:flex; gap:16px; align-items:flex-start;">
+                <span
+                  style="font-family:'Playfair Display',serif; font-size:28px; font-weight:900; color:var(--border); line-height:1; flex-shrink:0;">01</span>
+                <div>
+                  <div style="font-family:'Spectral',serif; font-weight:600; font-size:15px; margin-bottom:4px;">
+                    Governance Tax</div>
+                  <div class="body-m">Family control + €1.13B hoarded. Buybacks minimal. ROE structurally depressed.
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; gap:16px; align-items:flex-start;">
+                <span
+                  style="font-family:'Playfair Display',serif; font-size:28px; font-weight:900; color:var(--border); line-height:1; flex-shrink:0;">02</span>
+                <div>
+                  <div style="font-family:'Spectral',serif; font-weight:600; font-size:15px; margin-bottom:4px;">Russia
+                    Problem</div>
+                  <div class="body-m">Assets still on books. 35–45% of institutional funds barred by ESG mandates.</div>
+                </div>
+              </div>
+              <div style="display:flex; gap:16px; align-items:flex-start;">
+                <span
+                  style="font-family:'Playfair Display',serif; font-size:28px; font-weight:900; color:var(--border); line-height:1; flex-shrink:0;">03</span>
+                <div>
+                  <div style="font-family:'Spectral',serif; font-weight:600; font-size:15px; margin-bottom:4px;">The
+                    Green Bill</div>
+                  <div class="body-m">CO₂ capex rising to €350M+/yr. FCF conversion deteriorating structurally through
+                    2030.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card-dark reveal reveal-delay-2" style="padding:40px; height:100%;">
+            <div class="mono" style="color:var(--gold2); margin-bottom:24px;">The Floor Play</div>
+            <div
+              style="font-family:'Playfair Display',serif; font-size:32px; font-style:italic; color:#F0E8D8; line-height:1.3; margin-bottom:32px;">
+              "You aren't paying for a catalyst. You are paying for a floor."
+            </div>
+            <div style="height:1px; background:rgba(184,135,58,0.2); margin-bottom:32px;"></div>
+            <div class="mono" style="color:rgba(240,232,216,0.35); margin-bottom:20px;">Value Trap Check</div>
+            <p style="font-family:'Spectral',serif; font-size:13px; color:#8A8070; line-height:1.8;">
+              Critics are right that hoarding €1B at 3–4% while the business yields far more destroys ROE. But this
+              isn't a mistake — it's a feature. The family runs this company to survive the next 50 years, not to pump
+              the stock for the next quarter. You accept lower ROE for <span style="color:var(--gold2);">zero bankruptcy
+                risk</span>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+     SLIDE 3 — BUSINESS MODEL
+══════════════════════════════════════════════════════════ -->
+  <section class="slide content-slide parchment" id="s3">
+    <div class="section-num-bg">02</div>
+    <div class="container">
+      <div class="slide-label reveal">02 — Business Model</div>
+
+      <div class="display-l reveal reveal-delay-1" style="margin-bottom:20px;">
+        Turning <em class="gold">Rock</em> into Cash
+      </div>
+      <p class="body-l reveal reveal-delay-2" style="max-width:600px; margin-bottom:52px;">
+        The business is simple. The complexity — and the moat — lies entirely in logistics, not chemistry.
+      </p>
+
+      <div class="moat-steps reveal reveal-delay-2">
+        <div class="moat-step">
+          <div class="step-arrow"></div>
+          <div class="step-num">01</div>
+          <div style="font-family:'Spectral',serif; font-weight:600; font-size:16px; margin-bottom:8px;">Quarry</div>
+          <p class="body-m">Own the rock. No quarry = middleman. 10-year regulatory fight to open a new one.</p>
+        </div>
+        <div class="moat-step">
+          <div class="step-arrow"></div>
+          <div class="step-num">02</div>
+          <div style="font-family:'Spectral',serif; font-weight:600; font-size:16px; margin-bottom:8px;">Kiln</div>
+          <p class="body-m">1,450°C, 24/7. Enormous fixed costs. When volume drops 7%, margin collapses 500bps.</p>
+        </div>
+        <div class="moat-step">
+          <div class="step-arrow"></div>
+          <div class="step-num">03</div>
+          <div style="font-family:'Spectral',serif; font-weight:600; font-size:16px; margin-bottom:8px;">Clinker</div>
+          <p class="body-m">Chemical nodule. Grind with gypsum → cement. The commodity product that moves the world.</p>
+        </div>
+        <div class="moat-step highlight">
+          <div class="step-num">04</div>
+          <div
+            style="font-family:'Spectral',serif; font-weight:600; font-size:16px; margin-bottom:8px; color:var(--gold);">
+            The River</div>
+          <p style="font-size:13px; color:#8A8070; line-height:1.7;">Mississippi barge network from Selma, MO → Texas →
+            New Orleans. <span style="color:var(--gold2);">~6× cheaper than truck.</span> The terminals are the real
+            moat.</p>
+        </div>
+      </div>
+
+      <div class="rule"></div>
+
+      <div class="col-2 reveal reveal-delay-3">
+        <div>
+          <div class="mono" style="color:var(--gold); margin-bottom:16px;">2023–2024 Strategy</div>
+          <div style="font-family:'Playfair Display',serif; font-size:22px; font-style:italic; margin-bottom:12px;">
+            "Price Over Volume"</div>
+          <p class="body-m">Inflation era. Sacrificed market share to push price hikes. Worked when input costs rose
+            everywhere. US margins hit <strong style="color:var(--slate);">30%</strong>. The peak of the cycle.</p>
+        </div>
+        <div>
+          <div class="mono" style="color:var(--red); margin-bottom:16px;">2025 Pivot — NOW</div>
+          <div style="font-family:'Playfair Display',serif; font-size:22px; font-style:italic; margin-bottom:12px;">
+            "Volume Over Price"</div>
+          <p class="body-m">Strategy ceiling hit. Q4 US prices declined. Turkish mills entering Texas 20% cheaper.
+            Management explicitly paused the price-over-volume playbook. US margin: <strong
+              style="color:var(--red);">25%</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+     SLIDE 4 — GEOGRAPHY
+══════════════════════════════════════════════════════════ -->
+  <section class="slide content-slide" id="s4">
+    <div class="section-num-bg">03</div>
+    <div class="container">
+      <div class="slide-label reveal">03 — Geographic Breakdown</div>
+
+      <div class="col-2" style="gap:80px; align-items:start;">
+        <div>
+          <div class="display-l reveal reveal-delay-1" style="margin-bottom:16px;">
+            Where the Money<br><em class="gold">Actually</em> Comes From
+          </div>
+          <p class="body-l reveal reveal-delay-2" style="margin-bottom:40px;">
+            Ignore the revenue line. It lies. The profit pool tells the real story.
+          </p>
+
+          <!-- DONUT SVG -->
+          <div class="reveal reveal-delay-3">
+            <svg viewBox="0 0 240 240" width="200" height="200" style="display:block; margin-bottom:24px;">
+              <!-- USA 58% → 364.2 of 628.3 -->
+              <path d="M120,20 A100,100 0 1,1 119.9,20" fill="none" stroke="var(--gold)" stroke-width="40"
+                stroke-dasharray="364.2 628.3" stroke-dashoffset="0" />
+              <!-- Eastern Europe 15% → 94.2 -->
+              <path d="M120,20 A100,100 0 0,1 120,20" fill="none" stroke="var(--green)" stroke-width="40"
+                stroke-dasharray="94.2 628.3" stroke-dashoffset="-364.2" />
+              <!-- Central Europe (Germany+Lux) 14% → 88.0 -->
+              <path d="M120,20 A100,100 0 0,1 120,20" fill="none" stroke="var(--blue)" stroke-width="40"
+                stroke-dasharray="88.0 628.3" stroke-dashoffset="-458.4" />
+              <!-- Italy 13% → 81.7 -->
+              <path d="M120,20 A100,100 0 0,1 120,20" fill="none" stroke="#8A6020" stroke-width="40"
+                stroke-dasharray="81.7 628.3" stroke-dashoffset="-546.4" />
+              <circle cx="120" cy="120" r="60" fill="var(--ivory)" />
+              <text x="120" y="115" text-anchor="middle" font-family="Playfair Display,serif" font-size="20"
+                font-weight="900" fill="var(--gold)">~58%</text>
+              <text x="120" y="133" text-anchor="middle" font-family="DM Mono,monospace" font-size="9"
+                fill="var(--slate3)">USA EBITDA</text>
+            </svg>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:10px;height:10px;background:var(--gold);border-radius:2px;flex-shrink:0;"></div>
+                <span class="mono">USA ~58%</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:10px;height:10px;background:var(--green);border-radius:2px;flex-shrink:0;"></div>
+                <span class="mono">E. Europe ~15%</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:10px;height:10px;background:var(--blue);border-radius:2px;flex-shrink:0;"></div>
+                <span class="mono">C. Europe ~14%</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:10px;height:10px;background:#8A6020;border-radius:2px;flex-shrink:0;"></div>
+                <span class="mono">Italy ~13%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal reveal-delay-2">
+          <div class="bar-chart" id="geoChart">
+            <div style="margin-bottom:28px;">
+              <div class="mono" style="margin-bottom:20px; color:var(--gold);">EBITDA Contribution by Region</div>
+              <div class="bar-row">
+                <div class="bar-label-text">USA</div>
+                <div class="bar-track">
+                  <div class="bar-fill gold" data-w="58">~58%</div>
+                </div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label-text">E. Europe</div>
+                <div class="bar-track">
+                  <div class="bar-fill green" data-w="15">~15%</div>
+                </div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label-text">C. Europe</div>
+                <div class="bar-track">
+                  <div class="bar-fill blue" data-w="14">~14%</div>
+                </div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label-text">Italy</div>
+                <div class="bar-track">
+                  <div class="bar-fill grey" data-w="13">~13%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rule" style="margin:32px 0;"></div>
+
+          <div class="mono" style="color:var(--gold); margin-bottom:16px;">2025 Regional Performance</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="card" style="padding:20px;">
+              <div style="font-size:11px; color:var(--slate3); margin-bottom:4px;">🇺🇸 USA</div>
+              <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--red);">
+                −7.0%</div>
+              <div class="mono" style="font-size:8px; margin-top:4px;">Rates froze housing</div>
+            </div>
+            <div class="card" style="padding:20px;">
+              <div style="font-size:11px; color:var(--slate3); margin-bottom:4px;">🇩🇪 Germany</div>
+              <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--green);">
+                +1.1%</div>
+              <div class="mono" style="font-size:8px; margin-top:4px;">Hedging costs rolling off</div>
+            </div>
+            <div class="card" style="padding:20px;">
+              <div style="font-size:11px; color:var(--slate3); margin-bottom:4px;">🇵🇱 Poland</div>
+              <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--green);">
+                +12.8%</div>
+              <div class="mono" style="font-size:8px; margin-top:4px;">Infrastructure surge</div>
+            </div>
+            <div class="card" style="padding:20px;">
+              <div style="font-size:11px; color:var(--slate3); margin-bottom:4px;">🇲🇽 Mexico</div>
+              <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--gold);">
+                +2.9%*</div>
+              <div class="mono" style="font-size:8px; margin-top:4px;">*LFL · Reported: −5.8% FX</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+     SLIDE 5 — FINANCIALS
+══════════════════════════════════════════════════════════ -->
+  <section class="slide content-slide parchment" id="s5">
+    <div class="section-num-bg">04</div>
+    <div class="container">
+      <div class="slide-label reveal">04 — Financial Analysis</div>
+      <div class="display-l reveal reveal-delay-1" style="margin-bottom:48px;">
+        EBITDA Bridge <em class="gold">2024 → 2025</em>
+      </div>
+
+      <!-- Waterfall Chart -->
+      <div class="reveal reveal-delay-2" style="margin-bottom:16px;">
+        <div id="waterfall"
+          style="display:flex; align-items:flex-end; gap:8px; height:180px; padding-bottom:0; margin-bottom:12px;">
+          <!-- bars built by JS -->
+        </div>
+        <div style="display:flex; gap:8px; padding-top:8px; border-top:1px solid var(--border);">
+          <!-- labels built by JS -->
+        </div>
+      </div>
+
+      <div class="rule"></div>
+
+      <div class="col-4 reveal reveal-delay-3">
+        <div class="card card-gold-border">
+          <div class="kpi-value gold">€1.23B</div>
+          <div class="kpi-label">FY2025 EBITDA</div>
+          <p class="body-m" style="margin-top:12px;">Top of guidance range</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--red);">
+          <div class="kpi-value red">−6%</div>
+          <div class="kpi-label">LFL Change YoY</div>
+          <p class="body-m" style="margin-top:12px;">Organic stagnation behind M&A gloss</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--red);">
+          <div class="kpi-value red">25%</div>
+          <div class="kpi-label">US EBITDA Margin</div>
+          <p class="body-m" style="margin-top:12px;">Down from 30% in 2024</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--green);">
+          <div class="kpi-value green">€1.13B</div>
+          <div class="kpi-label">Net Cash Dec 2025</div>
+          <p class="body-m" style="margin-top:12px;">Up from €755M in Dec 2024</p>
+        </div>
+      </div>
+
+      <div class="rule"></div>
+
+      <div class="col-2 reveal reveal-delay-4">
+        <div>
+          <div class="mono" style="color:var(--gold); margin-bottom:12px;">Management "One-Off" Defense — Tested</div>
+          <p class="body-m" style="margin-bottom:16px;">CEO cited €14M in non-recurring costs. Adding every euro back:
+          </p>
+          <div style="background:var(--ivory); padding:20px; border:1px solid var(--border);">
+            <div
+              style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border);">
+              <span class="body-m">Reported H1 margin</span>
+              <span style="font-family:'DM Mono',monospace; font-size:12px; color:var(--slate);">24.1%</span>
+            </div>
+            <div
+              style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border);">
+              <span class="body-m">+ All one-offs (€14M)</span>
+              <span style="font-family:'DM Mono',monospace; font-size:12px; color:var(--green);">+0.6%</span>
+            </div>
+            <div
+              style="display:flex; justify-content:space-between; padding:8px 0; background:var(--ivory2); margin: 0 -20px; padding:8px 20px;">
+              <span style="font-family:'Spectral',serif; font-weight:600; font-size:14px;">Normalized margin</span>
+              <span
+                style="font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--gold);">24.7%</span>
+            </div>
+            <div style="padding-top:12px;">
+              <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--red);">Still 200bps below 2024's
+                26.7% — the structural compression is real</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="mono" style="color:var(--gold); margin-bottom:12px;">BBB+ Upgrade — The Balance Sheet Signal</div>
+          <p class="body-m" style="margin-bottom:16px;">S&P upgraded to BBB+ (Stable) in June 2025. The bond
+            cancellation tells the full story:</p>
+          <div class="card card-gold-border" style="background:var(--ivory);">
+            <p class="body-m italic" style="color:var(--slate);">"The company decided not to proceed with the bond
+              issuance approved in August."</p>
+            <div style="height:1px; background:var(--border); margin:16px 0;"></div>
+            <p class="body-m">They had a choice: refinance at high rates, or pay from cash. They chose cash. Signal:
+              <span style="color:var(--green); font-weight:600;">"We don't need your money."</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+     SLIDE 6 — RISKS
+══════════════════════════════════════════════════════════ -->
+  <section class="slide content-slide" id="s6">
+    <div class="section-num-bg">05</div>
+    <div class="container">
+      <div class="slide-label reveal" style="--gold:var(--red); color:var(--red);">05 — Risk Assessment</div>
+      <div class="display-l reveal reveal-delay-1" style="margin-bottom:16px;">
+        Operational Squeeze,<br>Not <em class="gold">Financial</em> Crisis
+      </div>
+      <p class="body-l reveal reveal-delay-2" style="max-width:620px; margin-bottom:48px;">
+        The balance sheet is immune to the credit cycle. The P&L is not.
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px;" class="reveal reveal-delay-2">
+
+        <div class="risk-card">
+          <div class="risk-level-bar" style="background:var(--red);"></div>
+          <div style="padding-left:16px;">
+            <div class="mono" style="color:var(--red); margin-bottom:10px;">HIGH · Structural</div>
+            <div style="font-family:'Spectral',serif; font-weight:600; font-size:15px; margin-bottom:10px;">Negative
+              Operating Leverage</div>
+            <p class="body-m">7% US volume drop → 500bps margin hit. Fixed kiln costs don't flex. Every lost ton hits
+              the bottom line directly.</p>
+          </div>
+        </div>
+
+        <div class="risk-card">
+          <div class="risk-level-bar" style="background:var(--red);"></div>
+          <div style="padding-left:16px;">
+            <div class="mono" style="color:var(--red); margin-bottom:10px;">HIGH · Competitive</div>
+            <div style="font-family:'Spectral',serif; font-weight:600; font-size:15px; margin-bottom:10px;">Turkish
+              Import Surge</div>
+            <p class="body-m">Turkey produces more cement than the entire US despite being 27× smaller economically. New
+              grinding plant in Texas, Oct '25. The price umbrella is collapsing.</p>
+          </div>
+        </div>
+
+        <div class="risk-card">
+          <div class="risk-level-bar" style="background:var(--gold);"></div>
+          <div style="padding-left:16px;">
+            <div class="mono" style="color:var(--gold); margin-bottom:10px;">MEDIUM · Customer</div>
+            <div style="font-family:'Spectral',serif; font-weight:600; font-size:15px; margin-bottom:10px;">Quikrete →
+              Rival</div>
+            <p class="body-m">~6% of US sales. If Quikrete finalizes Summit Materials acquisition, Buzzi's biggest buyer
+              gains own production. Volume hole with smaller clients.</p>
+          </div>
+        </div>
+
+        <div class="risk-card">
+          <div class="risk-level-bar" style="background:var(--gold);"></div>
+          <div style="padding-left:16px;">
+            <div class="mono" style="color:var(--gold); margin-bottom:10px;">MEDIUM · Regulatory</div>
+            <div style="font-family:'Spectral',serif; font-weight:600; font-size:15px; margin-bottom:10px;">CBAM Failure
+              Risk</div>
+            <p class="body-m">Carbon Border Adjustment Mechanism is untested. If it fails to penalize Turkish/African
+              imports by 2026, EU plants face structural cost disadvantage.</p>
+          </div>
+        </div>
+
+        <div class="risk-card">
+          <div class="risk-level-bar" style="background:var(--gold);"></div>
+          <div style="padding-left:16px;">
+            <div class="mono" style="color:var(--gold); margin-bottom:10px;">MEDIUM · Strategic</div>
+            <div style="font-family:'Spectral',serif; font-weight:600; font-size:15px; margin-bottom:10px;">Brazil:
+              Empire Building?</div>
+            <p class="body-m">Hard-currency cash deployed into soft-currency assets at 21% margin vs 27% group average.
+              ROIC dilution is real and immediate. Long-term demographic bet.</p>
+          </div>
+        </div>
+
+        <div class="risk-card">
+          <div class="risk-level-bar" style="background:var(--green);"></div>
+          <div style="padding-left:16px;">
+            <div class="mono" style="color:var(--green); margin-bottom:10px;">LOW · Contained</div>
+            <div style="font-family:'Spectral',serif; font-weight:600; font-size:15px; margin-bottom:10px;">Balance
+              Sheet / Legal</div>
+            <p class="body-m">€1.13B cash covers all provisions. Environmental: €68M quarry restoration, non-current.
+              Antitrust: €13M actual vs €109M headline. Zero financial threat.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+     SLIDE 7 — VALUATION
+══════════════════════════════════════════════════════════ -->
+  <section class="slide content-slide parchment" id="s7">
+    <div class="section-num-bg">06</div>
+    <div class="container">
+      <div class="slide-label reveal">06 — Valuation</div>
+      <div class="display-l reveal reveal-delay-1" style="margin-bottom:16px;">
+        Three <em class="gold">Industrial</em> Realities
+      </div>
+      <p class="body-l reveal reveal-delay-2" style="max-width:600px; margin-bottom:48px;">
+        Not financial models. Three actual outcomes based on how this sector works. Entry at ~€48.
+      </p>
+
+      <div class="scenario-grid reveal reveal-delay-3">
+        <div class="scenario-card bear">
+          <div class="scenario-stripe stripe-bear"></div>
+          <div class="mono" style="color:var(--red); margin-bottom:16px;">Bear Case — 2028</div>
+          <div
+            style="font-family:'Playfair Display',serif; font-size:56px; font-weight:900; color:var(--red); line-height:1; letter-spacing:-2px; margin-bottom:4px;">
+            €32</div>
+          <div style="font-family:'Spectral',serif; font-size:18px; color:var(--red); margin-bottom:28px;">−33% from €48
+          </div>
+          <div style="height:1px; background:var(--border); margin-bottom:24px;"></div>
+          <div class="body-m" style="display:grid; gap:8px;">
+            <div><span style="color:var(--slate); font-weight:600;">Multiple:</span> 4.5× EV/EBITDA</div>
+            <div><span style="color:var(--slate); font-weight:600;">Margin:</span> 21.5%</div>
+            <div><span style="color:var(--slate); font-weight:600;">Sales:</span> −1.5%</div>
+            <div><span style="color:var(--slate); font-weight:600;">Green capex:</span> €1.5B (no subsidies)</div>
+          </div>
+          <p class="body-m" style="margin-top:20px; font-style:italic;">Recession in residential. Full decarbonization
+            cost. No public support. Market prices distress.</p>
+        </div>
+
+        <div class="scenario-card base">
+          <div class="scenario-stripe stripe-base"></div>
+          <div class="mono" style="color:var(--gold2); margin-bottom:16px;">Base Case — 2028</div>
+          <div
+            style="font-family:'Playfair Display',serif; font-size:56px; font-weight:900; color:var(--gold); line-height:1; letter-spacing:-2px; margin-bottom:4px;">
+            €55</div>
+          <div style="font-family:'Spectral',serif; font-size:18px; color:var(--gold2); margin-bottom:28px;">+15% from
+            €48</div>
+          <div style="height:1px; background:rgba(184,135,58,0.2); margin-bottom:24px;"></div>
+          <div class="body-m" style="display:grid; gap:8px; color:#8A8070;">
+            <div><span style="color:#C0B8A8; font-weight:600;">Multiple:</span> 6.0× EV/EBITDA</div>
+            <div><span style="color:#C0B8A8; font-weight:600;">Margin:</span> 25.5%</div>
+            <div><span style="color:#C0B8A8; font-weight:600;">Sales:</span> +2.0%</div>
+            <div><span style="color:#C0B8A8; font-weight:600;">Green capex:</span> €1.35B</div>
+          </div>
+          <p style="font-family:'Spectral',serif; font-size:13px; color:#6A6050; margin-top:20px; font-style:italic;">
+            Current trend continues. Brazil/Mexico offset US. Historical average multiple. Annual return: ~3%. You're
+            paying for a bond.</p>
+        </div>
+
+        <div class="scenario-card bull">
+          <div class="scenario-stripe stripe-bull"></div>
+          <div class="mono" style="color:var(--green); margin-bottom:16px;">Bull Case — 2028</div>
+          <div
+            style="font-family:'Playfair Display',serif; font-size:56px; font-weight:900; color:var(--green); line-height:1; letter-spacing:-2px; margin-bottom:4px;">
+            €85</div>
+          <div style="font-family:'Spectral',serif; font-size:18px; color:var(--green); margin-bottom:28px;">+77% from
+            €48</div>
+          <div style="height:1px; background:var(--border); margin-bottom:24px;"></div>
+          <div class="body-m" style="display:grid; gap:8px;">
+            <div><span style="color:var(--slate); font-weight:600;">Multiple:</span> 7.5× EV/EBITDA</div>
+            <div><span style="color:var(--slate); font-weight:600;">Margin:</span> 28.0%</div>
+            <div><span style="color:var(--slate); font-weight:600;">Sales:</span> +5.0%</div>
+            <div><span style="color:var(--slate); font-weight:600;">Green capex:</span> €1.2B (with subsidies)</div>
+          </div>
+          <p class="body-m" style="margin-top:20px; font-style:italic;">IIJA converts to real demand. US at full
+            capacity. Market re-rates toward American peers. Requires governance catalyst.</p>
+        </div>
+      </div>
+
+      <div class="gauge-wrap reveal reveal-delay-4">
+        <div class="mono" style="color:var(--gold2); margin-bottom:8px;">Entry Price Framework</div>
+        <div class="gauge-track">
+          <div class="gauge-fill" style="left:0; width:36%; background:linear-gradient(90deg,var(--green),#3A9060);">
+          </div>
+          <div class="gauge-fill"
+            style="left:36%; width:28%; background:linear-gradient(90deg,var(--gold3),var(--gold));"></div>
+          <div class="gauge-fill"
+            style="left:64%; width:36%; background:linear-gradient(90deg,var(--gold),var(--red));"></div>
+          <!-- Current price ~€48 ≈ 64% along -->
+          <div class="gauge-marker" style="left:64%;">
+            <div class="gauge-marker-label">~€48 current</div>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--green);">Below €42 —
+            Asymmetric</span>
+          <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--gold2);">€45–€50 — Bond-like
+            3%</span>
+          <span style="font-family:'DM Mono',monospace; font-size:10px; color:#C07870;">Above €52 — Avoid</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+     SLIDE 8 — M&A STRATEGY
+══════════════════════════════════════════════════════════ -->
+  <section class="slide content-slide" id="s8">
+    <div class="section-num-bg">07</div>
+    <div class="container">
+      <div class="slide-label reveal">07 — M&amp;A Strategy</div>
+      <div class="display-l reveal reveal-delay-1" style="margin-bottom:16px;">
+        Portfolio <em class="gold">Reconfiguration</em>
+      </div>
+      <p class="body-l reveal reveal-delay-2" style="max-width:640px; margin-bottom:52px;">
+        Despite spending ~€400M on acquisitions in 2024–25, Buzzi still grew net cash by €376M. They funded a complete
+        portfolio transformation from internal cash flow.
+      </p>
+
+      <div class="col-2" style="gap:60px; align-items:start;">
+        <div>
+          <div class="mono" style="color:var(--gold); margin-bottom:24px;">Acquisitions</div>
+          <div class="timeline reveal reveal-delay-2">
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-year">UAE — Gulf Cement Co.</div>
+              <div style="font-family:'Spectral',serif; font-weight:600; font-size:15px; margin-bottom:6px;">57.6% stake
+                · Below book value (Badwill)</div>
+              <p class="body-m">Not just a local market play. Produces cheap clinker in Ras Al Khaimah for export to
+                Houston terminal. Turns the Turkish import threat into an owned supply chain. The most strategically
+                elegant move of the period.</p>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-year">Brazil — Nacional Cimentos</div>
+              <div style="font-family:'Spectral',serif; font-weight:600; font-size:15px; margin-bottom:6px;">50% → 100%
+                · Cost: €301.8M + €67M</div>
+              <p class="body-m">Margin-dilutive (21% vs 27% group avg). BRL currency risk. But secures dominant position
+                in a growing demographic market — the long-duration hedge against European stagnation.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="mono" style="color:var(--red); margin-bottom:24px;">Exits — De-Risking</div>
+          <div class="timeline reveal reveal-delay-3">
+            <div class="tl-item">
+              <div class="tl-dot" style="border-color:var(--red);"></div>
+              <div class="tl-year" style="color:var(--red);">Ukraine → CRH</div>
+              <div style="font-family:'Spectral',serif; font-weight:600; font-size:15px; margin-bottom:6px;">Sale for
+                ~€100M · Dec 2024</div>
+              <p class="body-m">Management preferred immediate cash and de-risked balance sheet over waiting for a
+                potential post-war reconstruction boom. If Ukraine gets rebuilt, CRH sells the cement. The
+                "reconstruction premium" does not exist here.</p>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot" style="border-color:var(--red);"></div>
+              <div class="tl-year" style="color:var(--red);">Italy (Fanna Plant)</div>
+              <div style="font-family:'Spectral',serif; font-weight:600; font-size:15px; margin-bottom:6px;">Swapped for
+                25% stake in Alpacem (Austria)</div>
+              <p class="body-m">Traded operational headaches in a difficult Italian market for passive equity income in
+                Austria. Textbook capital rotation: exit active labor for passive yield.</p>
+            </div>
+          </div>
+
+          <div class="card card-gold-border reveal reveal-delay-4"
+            style="margin-top:24px; background:var(--parchment);">
+            <div class="mono" style="color:var(--gold); margin-bottom:10px;">The Hidden Stat</div>
+            <p class="body-m">+4.8% reported revenue growth was <strong style="color:var(--slate);">entirely
+                M&A-driven</strong>. Organic (LFL) growth: just <strong style="color:var(--red);">+0.5%</strong>. The
+              legacy business is stagnant. The growth is bought.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+     SLIDE 9 — CAPITAL ALLOCATION
+══════════════════════════════════════════════════════════ -->
+  <section class="slide content-slide parchment" id="s9">
+    <div class="section-num-bg">08</div>
+    <div class="container">
+      <div class="slide-label reveal">08 — Capital Allocation &amp; Verdict</div>
+
+      <div class="col-2" style="gap:80px; align-items:start;">
+        <div>
+          <div class="display-l reveal reveal-delay-1" style="margin-bottom:32px;">
+            Buy the <em class="gold">Floor.</em><br>Not the Ceiling.
+          </div>
+          <div class="card card-gold-border reveal reveal-delay-2" style="margin-bottom:32px;">
+            <p class="body-l italic" style="color:var(--slate);">
+              This is not a high-growth play. It's an exercise in valuation. You buy Buzzi for the asymmetric margin of
+              safety — US assets priced at a European multiple.
+            </p>
+          </div>
+          <div class="reveal reveal-delay-3">
+            <p class="body-m" style="margin-bottom:20px;">The family won't change. They will keep hoarding cash to sleep
+              well at night, buy lower-margin assets in Brazil for "demographic survival," and spend millions on green
+              kilns just to stay in business. This inefficiency is the price you pay for a company built to outlast
+              competitors.</p>
+            <div class="rule-gold"></div>
+            <p class="body-m" style="color:var(--red);">The opportunity cost is real. The same capital in Eagle
+              Materials gives you cleaner US exposure, better capital returns, and zero governance discount. Buzzi only
+              wins if the Italian Discount closes.</p>
+          </div>
+        </div>
+
+        <div class="reveal reveal-delay-2">
+          <div class="card-dark" style="padding:40px;">
+            <div class="mono" style="color:var(--gold2); margin-bottom:24px;">Watch for These Triggers</div>
+
+            <div style="display:flex; flex-direction:column; gap:0;">
+              <div style="padding:20px 0; border-bottom:1px solid #2A2418;">
+                <div
+                  style="font-family:'DM Mono',monospace; font-size:22px; font-weight:300; color:var(--gold); margin-bottom:8px;">
+                  01</div>
+                <div
+                  style="font-family:'Spectral',serif; font-size:15px; color:#E8E0D0; font-weight:600; margin-bottom:4px;">
+                  Russia Exit Announcement</div>
+                <p style="font-family:'Spectral',serif; font-size:13px; color:#8A8070; line-height:1.7;">Immediate
+                  15–20% re-rating likely. Opens 35–45% of institutional buyer base currently barred by ESG mandates.
+                </p>
+              </div>
+              <div style="padding:20px 0; border-bottom:1px solid #2A2418;">
+                <div
+                  style="font-family:'DM Mono',monospace; font-size:22px; font-weight:300; color:var(--gold); margin-bottom:8px;">
+                  02</div>
+                <div
+                  style="font-family:'Spectral',serif; font-size:15px; color:#E8E0D0; font-weight:600; margin-bottom:4px;">
+                  Rate Cut Cycle</div>
+                <p style="font-family:'Spectral',serif; font-size:13px; color:#8A8070; line-height:1.7;">US residential
+                  thaws. Texas volumes recover. US margin snaps back from 25% toward 30% faster than consensus models.
+                </p>
+              </div>
+              <div style="padding:20px 0; border-bottom:1px solid #2A2418;">
+                <div
+                  style="font-family:'DM Mono',monospace; font-size:22px; font-weight:300; color:var(--gold); margin-bottom:8px;">
+                  03</div>
+                <div
+                  style="font-family:'Spectral',serif; font-size:15px; color:#E8E0D0; font-weight:600; margin-bottom:4px;">
+                  CBAM Enforcement Data</div>
+                <p style="font-family:'Spectral',serif; font-size:13px; color:#8A8070; line-height:1.7;">Proves the
+                  mechanism works against Turkish imports. Validates European business defensibility. Changes the
+                  competitive calculus.</p>
+              </div>
+              <div style="padding:20px 0;">
+                <div
+                  style="font-family:'DM Mono',monospace; font-size:22px; font-weight:300; color:var(--gold); margin-bottom:8px;">
+                  04</div>
+                <div
+                  style="font-family:'Spectral',serif; font-size:15px; color:#E8E0D0; font-weight:600; margin-bottom:4px;">
+                  Special Dividend or Buyback Acceleration</div>
+                <p style="font-family:'Spectral',serif; font-size:13px; color:#8A8070; line-height:1.7;">The signal that
+                  matters: family has decided the capex liability is manageable. Excess cash is real. Game-changing for
+                  sentiment.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+     SLIDE 10 — ANALYST COMMENTS
+══════════════════════════════════════════════════════════ -->
+  <section class="slide content-slide dark" id="s10">
+    <div class="container">
+      <div class="slide-label light reveal">10 — Analyst Commentary</div>
+      <div class="display-l reveal reveal-delay-1" style="color:#F0E8D8; margin-bottom:16px;">
+        Beyond the <em style="color:var(--gold);">Surface</em>
+      </div>
+      <p style="font-family:'Spectral',serif; font-size:16px; color:#6A6050; margin-bottom:56px; max-width:600px;"
+        class="reveal reveal-delay-2">
+        What the data shows when you go deeper than the headline numbers.
+      </p>
+
+      <div class="reveal reveal-delay-3">
+
+        <div class="analyst-comment" onclick="toggleComment(this)">
+          <div class="comment-header">
+            <div>
+              <div class="comment-tag">01 · The Real Moat</div>
+              <div class="comment-title">The river isn't the moat — the terminals are. And that distinction matters
+                enormously.</div>
+            </div>
+            <div class="comment-toggle">Read ↓</div>
+          </div>
+          <div class="comment-body">
+            <p class="comment-text">The thesis correctly identifies the Mississippi logistics advantage, but misses the
+              second-order insight: <span class="hl">the import terminals in Houston and New Orleans are the actual
+                choke point</span>. Buzzi doesn't just own the cheapest production route — they own the ports of entry.
+              What's changed in 2025 is that new Turkish grinding mills are being built on US soil (Corpus Christi,
+              Texas — October 2025), which means competitors are routing around the terminal dependency entirely.
+              They're not importing finished cement; they're importing raw clinker and grinding locally. <span
+                class="hlr">This is a structural threat the thesis underweights</span>. The river advantage protects the
+              existing business but doesn't stop the competitive dynamic from migrating onshore. The UAE acquisition is
+              the right response — but management is 2–3 years behind the curve on this.</p>
+          </div>
+        </div>
+
+        <div class="analyst-comment" onclick="toggleComment(this)">
+          <div class="comment-header">
+            <div>
+              <div class="comment-tag">02 · The €1.13B Question</div>
+              <div class="comment-title">The fortress cash is a hostage, not a war chest. The family already knows this.
+              </div>
+            </div>
+            <div class="comment-toggle">Read ↓</div>
+          </div>
+          <div class="comment-body">
+            <p class="comment-text">Every analyst frames the cash position as either "lazy" or "prudent." Both miss the
+              point. <span class="hl">The cash isn't discretionary — it's structurally committed</span>. European cement
+              capex for full decarbonization runs €80–120/ton of capacity. Buzzi has ~20M tons of European capacity.
+              That's €1.6–2.4B minimum over the next decade. The €1.13B covers barely 50% of the European "license to
+              operate" alone, before any US upgrades. <span class="hlr">The family isn't hoarding cash to be
+                conservative — they've run the numbers and know there is no real surplus.</span> The buyback in H1 2024
+              (€52M) was a PR move, not a strategic commitment. The bond cancellation signal was: "we need the
+              flexibility." The question isn't when they deploy cash for shareholders — it's whether the cash is
+              sufficient for the industrial transformation without issuing equity.</p>
+          </div>
+        </div>
+
+        <div class="analyst-comment" onclick="toggleComment(this)">
+          <div class="comment-header">
+            <div>
+              <div class="comment-tag">03 · The Turkey Paradox</div>
+              <div class="comment-title">Buzzi is now on both sides of the import trade — a position no competitor has
+                built.</div>
+            </div>
+            <div class="comment-toggle">Read ↓</div>
+          </div>
+          <div class="comment-body">
+            <p class="comment-text">Buzzi spent years defending against cheap imported clinker. Now, with Gulf Cement in
+              Ras Al Khaimah, <span class="hl">they own a low-cost production base in the same geographic corridor as
+                their Turkish competitors.</span> UAE energy costs are ~40% below European costs, no CBAM exposure on
+              Gulf exports. If the US market structurally transitions to an import-price market — which the 2025 data
+              strongly suggests it is — Buzzi's domestic US margins will compress, but their import-cost margin from the
+              UAE will expand. <span class="hl">They're building a two-sided position.</span> The "badwill" gain on Gulf
+              Cement means they entered below replacement cost. The risk is execution: integrating a Ras Al Khaimah
+              operation into a Houston terminal logistics chain involves complexity they haven't managed before.</p>
+          </div>
+        </div>
+
+        <div class="analyst-comment" onclick="toggleComment(this)">
+          <div class="comment-header">
+            <div>
+              <div class="comment-tag">04 · PNRR vs IIJA</div>
+              <div class="comment-title">Two government programs, completely different timelines. One is flowing. One is
+                theoretical.</div>
+            </div>
+            <div class="comment-toggle">Read ↓</div>
+          </div>
+          <div class="comment-body">
+            <p class="comment-text">Italy's PNRR is already in the system — the 2025 LFL growth of +2.1% in a market
+              where residential has collapsed proves it. <span class="hl">The Italian business is more resilient than
+                the headline number suggests.</span> On the US side, the IIJA infrastructure story has a different
+              problem: <span class="hlr">inflation eroded the purchasing power of authorized spending by 20–30%.</span>
+              A bridge budgeted at $100M in 2021 now costs $130M. Agencies are either delaying or descoping. The cement
+              volumes implied in the original IIJA authorization are structurally lower in real terms. The bull case
+              assumes this resolves. It likely doesn't before 2027 at the earliest, and only if the political
+              environment remains stable — which is not a given in this cycle.</p>
+          </div>
+        </div>
+
+        <div class="analyst-comment" onclick="toggleComment(this)">
+          <div class="comment-header">
+            <div>
+              <div class="comment-tag">05 · Russia — The Unlockable Catalyst</div>
+              <div class="comment-title">Russia isn't ESG noise. It's the single biggest unlockable multiple expansion
+                in the thesis.</div>
+            </div>
+            <div class="comment-toggle">Read ↓</div>
+          </div>
+          <div class="comment-body">
+            <p class="comment-text">Run the numbers: 35–45% of the natural buyer base for Buzzi (European large-cap
+              industrial funds, US ESG-tilted strategies, Scandinavian pension allocators) are structurally prevented
+              from owning the stock at any price. Remove Russia from the portfolio, and you immediately open up a new
+              investor category worth <span class="hl">200–300bps of multiple expansion without a single operational
+                change</span>. The Ukraine exit for ~€100M shows they can pull the trigger. Russia is different in scale
+              — €303M in revenue vs Ukraine's smaller footprint. But the strategic logic is identical. <span
+                class="hlr">Any whisper of a Russia exit should be treated as a significant catalyst, not just a
+                "de-risking" headline.</span> The market will re-rate instantly on announcement, long before the
+              transaction closes.</p>
+          </div>
+        </div>
+
+        <div class="analyst-comment" onclick="toggleComment(this)">
+          <div class="comment-header">
+            <div>
+              <div class="comment-tag">06 · The Non-Consensus Verdict</div>
+              <div class="comment-title">This is "Hold with a Specific Trigger List" — not a buy-and-forget, not a sell.
+              </div>
+            </div>
+            <div class="comment-toggle">Read ↓</div>
+          </div>
+          <div class="comment-body">
+            <p class="comment-text">The real trade isn't "wait for a market selloff to buy the fortress." <span
+                class="hl">The real trade is to define the specific catalysts that would close the Italian Discount
+                structurally, and monitor those.</span> The four triggers are listed in slide 9. At current prices
+              (~€48), the stock is neither cheap enough to buy for the floor argument nor expensive enough to sell for
+              poor capital allocation. <span class="hlr">The opportunity cost is real — the same €48 in Eagle Materials
+                gives you cleaner US exposure, better capital returns, no governance discount.</span> The only reason to
+              own Buzzi over Eagle is if you believe the Italian Discount closes. And that requires believing the family
+              will change. Which they won't — unless one of those four triggers fires.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="padding:48px 0 0; border-top:1px solid #2A2418; margin-top:48px;" class="reveal">
+        <p style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:#dfc9b7; line-height:1.8;">
+          DISCLAIMER — Nothing in this document constitutes financial advice. This analysis is for informational
+          purposes only and represents personal opinions and research. All investments involve risk of loss. Consult a
+          qualified financial advisor before making investment decisions. Past performance is not indicative of future
+          results.
+        </p>
+      </div>
+      <div style="padding:48px 0 0; border-top:1px solid #2A2418; margin-top:48px;font-family:'DM Mono',monospace;"
+        class="revealcolubeat">
+        <a href="https://colubeatid.substack.com/" class="revealcolubeat2" target="_blank">Go to
+          Colubeat Investment Desk for more.</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════════ -->
+  <script>
+    // ── SLIDES ARRAY ──────────────────────────────────────
+    const slides = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10'];
+    const dots = document.querySelectorAll('.dot');
+
+    function scrollToSlide(i) {
+      document.getElementById(slides[i]).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ── SCROLL PROGRESS + ACTIVE DOT ──────────────────────
+    function onScroll() {
+      const scrollTop = window.scrollY;
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      document.getElementById('progress').style.width = (scrollTop / docH * 100) + '%';
+
+      // Find active slide
+      let active = 0;
+      slides.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.5) {
+          active = i;
+        }
+      });
+
+      dots.forEach((d, i) => d.classList.toggle('active', i === active));
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // ── REVEAL ON SCROLL ──────────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          // Trigger bar chart if in geography slide
+          if (e.target.closest('#s4')) animateBars();
+          // Trigger waterfall if in financials slide
+          if (e.target.closest('#s5')) buildWaterfall();
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ── ANIMATE BARS ──────────────────────────────────────
+    let barsAnimated = false;
+    function animateBars() {
+      if (barsAnimated) return;
+      barsAnimated = true;
+      document.querySelectorAll('.bar-fill').forEach(b => {
+        b.style.width = b.dataset.w + '%';
+      });
+    }
+
+    // ── WATERFALL ─────────────────────────────────────────
+    let wfBuilt = false;
+    function buildWaterfall() {
+      if (wfBuilt) return;
+      wfBuilt = true;
+
+      const data = [
+        { lbl: '2024\nEBITDA', val: 1310, type: 'total', color: '#3A3530' },
+        { lbl: 'US\nVolume', val: -60, type: 'neg', color: '#A83830' },
+        { lbl: 'FX\nImpact', val: -50, type: 'neg', color: '#A83830' },
+        { lbl: 'Europe\nRec.', val: 28, type: 'pos', color: '#2A6040' },
+        { lbl: 'Poland', val: 18, type: 'pos', color: '#2A6040' },
+        { lbl: 'M+A\nConst.', val: 32, type: 'pos', color: '#1A4A6A' },
+        { lbl: 'Green\nCapex', val: -48, type: 'neg', color: '#A83830' },
+        { lbl: '2025\nEBITDA', val: 1230, type: 'total', color: '#B8873A' },
+      ];
+
+      const CHART_H = 200;
+      const MIN_BAR_H = 28; // minimum px for any bar so small values are readable
+      const maxVal = 1400;
+
+      // Scale function: total bars use linear scale, delta bars use MIN_BAR_H floor
+      function scaleTotal(v) { return Math.max(MIN_BAR_H, v / maxVal * CHART_H); }
+      function scaleDelta(v) { return Math.max(MIN_BAR_H, Math.abs(v) / maxVal * CHART_H); }
+
+      const wfEl = document.getElementById('waterfall');
+      wfEl.style.height = CHART_H + 'px';
+      wfEl.innerHTML = '';
+
+      let running = 1310; // start after first total bar
+
+      data.forEach((d, i) => {
+        const col = document.createElement('div');
+        col.style.cssText = 'flex:1; display:flex; flex-direction:column; align-items:center; height:100%;';
+
+        // Value label above bar
+        const valLabel = document.createElement('div');
+        const sign = d.type === 'pos' ? '+' : (d.type === 'neg' ? '' : '');
+        const displayVal = d.type === 'total' ? `€${d.val}M` : `${sign}${d.val}`;
+        valLabel.style.cssText = `font-family:'DM Mono',monospace; font-size:9px; color:${d.color}; text-align:center; letter-spacing:0.3px; font-weight:500; flex-shrink:0; padding-bottom:4px;`;
+        valLabel.textContent = displayVal;
+
+        // Bar wrapper — fills remaining height, aligns bar to bottom
+        const barWrap = document.createElement('div');
+        barWrap.style.cssText = `width:100%; flex:1; display:flex; flex-direction:column; justify-content:flex-end; position:relative;`;
+
+        const bar = document.createElement('div');
+        bar.style.cssText = `width:88%; margin:0 auto; border-radius:2px 2px 0 0; background:${d.color}; transition:height 1.2s cubic-bezier(0.4,0,0.2,1); transition-delay:${i * 0.1}s; height:0;`;
+
+        if (d.type === 'total') {
+          const targetH = scaleTotal(d.val);
+          setTimeout(() => { bar.style.height = targetH + 'px'; }, 120);
+        } else {
+          // Delta bars: float above baseline using a spacer
+          const baseH = running / maxVal * CHART_H;
+          const deltaH = scaleDelta(d.val);
+          const spacerH = Math.max(0, CHART_H - baseH - (d.type === 'neg' ? deltaH : deltaH));
+          const spacer = document.createElement('div');
+          spacer.style.cssText = `height:${spacerH}px; flex-shrink:0;`;
+          bar.style.cssText = `width:88%; margin:0 auto; border-radius:2px; background:${d.color}; opacity:0.9; transition:height 1.2s cubic-bezier(0.4,0,0.2,1); transition-delay:${i * 0.1}s; height:0;`;
+          setTimeout(() => { bar.style.height = deltaH + 'px'; }, 120);
+          barWrap.appendChild(spacer);
+          // Update running total
+          running += d.val;
+        }
+
+        barWrap.appendChild(bar);
+
+        // Bottom label
+        const lbl = document.createElement('div');
+        lbl.style.cssText = `font-family:'DM Mono',monospace; font-size:8px; color:var(--slate3); text-align:center; margin-top:8px; line-height:1.3; letter-spacing:0.3px; flex-shrink:0;`;
+        lbl.textContent = d.lbl.replace('\n', ' ');
+
+        col.appendChild(valLabel);
+        col.appendChild(barWrap);
+        col.appendChild(lbl);
+        wfEl.appendChild(col);
+      });
+    }
+
+    // ── ANALYST COMMENT TOGGLE ────────────────────────────
+    function toggleComment(el) {
+      const body = el.querySelector('.comment-body');
+      const toggle = el.querySelector('.comment-toggle');
+      const isOpen = body.classList.contains('open');
+
+      // Close all others
+      document.querySelectorAll('.comment-body.open').forEach(b => {
+        b.classList.remove('open');
+        b.closest('.analyst-comment').querySelector('.comment-toggle').textContent = 'Read ↓';
+      });
+
+      if (!isOpen) {
+        body.classList.add('open');
+        toggle.textContent = 'Close ↑';
+      }
+    }
+
+    // ── INIT ──────────────────────────────────────────────
+    // Trigger first slide reveals
+    setTimeout(() => {
+      document.querySelectorAll('#s1 .reveal').forEach((el, i) => {
+        setTimeout(() => el.classList.add('visible'), i * 140);
+      });
+    }, 100);
+  </script>
+</body>
+
+</html>
